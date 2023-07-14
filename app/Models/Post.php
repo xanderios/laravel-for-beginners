@@ -8,7 +8,8 @@ use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 class Post
 {
-    public function __construct(public $title, public $excerpt, public $date, public $body, public $slug) {
+    public function __construct(public $title, public $excerpt, public $date, public $body, public $slug)
+    {
         $this->$title = $title;
         $this->$excerpt = $excerpt;
         $this->$date = $date;
@@ -16,11 +17,12 @@ class Post
         $this->$slug = $slug;
     }
 
-    public static function all() {
-        return cache()->remember('posts.all', now()->addSeconds(10), function() {
+    public static function all()
+    {
+        return cache()->remember('posts.all', now()->addSeconds(10), function () {
             return collect(File::files(resource_path("posts")))
-                ->map(fn($file) => YamlFrontMatter::parseFile($file))
-                ->map(fn($document) => new Post(
+                ->map(fn ($file) => YamlFrontMatter::parseFile($file))
+                ->map(fn ($document) => new Post(
                     $document->title,
                     $document->excerpt,
                     $document->date,
@@ -31,14 +33,16 @@ class Post
         });
     }
 
-    public static function find($slug) {
+    public static function find($slug)
+    {
         return static::all()->firstWhere('slug', $slug);
     }
 
-    public static function findOrFail($slug) {
+    public static function findOrFail($slug)
+    {
         $post = static::find($slug);
 
-        if (! $post) {
+        if (!$post) {
             throw new ModelNotFoundException();
         }
 
